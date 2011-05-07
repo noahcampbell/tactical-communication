@@ -1,0 +1,9 @@
+From: me@example.com
+To: get@tactical.io (self test)
+X-info: I'm just testing
+CC: sa1@example.com; sa2@example.com
+BCC: manager1@example.com
+Subject: Experience a dip in network traffic on our primary interface.
+
+BODY OF MESSAGE SEPARATED BY EMPTY LINE
+txt txt txt txt txt txt txt txt txt txt  
