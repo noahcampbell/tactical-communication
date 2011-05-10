@@ -1,0 +1,26 @@
+From: "John Coggeshall" <john@php.net>
+To: "Angie Sue" <angiesue@example.com>
+Subject: Here's a neat picture
+Date: Sat, 23 Dec 2002 10:21:34 -0400
+Message-ID: <somewhere@somecomputer.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="abcdefghi";
+Content-Transfer-Encoding: 7bit
+
+This is a MIME-based e-mail. If you are reading this message,
+Then your e-mail client does not support the MIME protocol.
+
+--abcdefghi
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+
+Hey there Angie Sue! Check out this neat image I found online.
+
+- John
+--abcdefghi
+Content-Type: image/jpeg; name="angel.jpg";
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment
+
+<base64 encoded data for the file 'angel.jpg'>
+--abcdefghi--

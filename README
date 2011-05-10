@@ -2,3 +2,9 @@
 
 rpmdev-setuptree # part of rpmdev-tools package
 make communication-1.0.tar.gz && cp communication-1.0.tar.gz ~/rpmbuild/SOURCES/ && rpmbuild -ta ~/rpmbuild/SOURCES/communication-1.0.tar.gz
+
+
+# Testing
+
+cd mail-ingress
+cat test/inbox | formail -s procmail ~/Projects/tactical/tactical-communication/mail-ingress/pm-get.rc

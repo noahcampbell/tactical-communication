@@ -2,7 +2,12 @@ SHELL       = /bin/bash
 #LOGFILE     = $HOME/pm.log
 LOGABSTRACT = "all"
 VERBOSE     = "on" 
-PATH	    = /home/noahcampbell/Development/Python/Envs/tactical-communication/bin:$PATH:$HOME/Projects/tactical/tactical-communication/mail-ingres
+PATH	    = /home/noahcampbell/Development/Python/Envs/tactical-communication/bin:$PATH:$HOME/Projects/tactical/tactical-communication/mail-ingress
+ATTACHMENT_DEST = /var/tactical/ingress/attachments
+UUID=`uuidgen`
 
-:0
-| get-tactical-ingress
+:0 c
+| get-tactical-ingress $UUID $ATTACHMENT_DEST
+
+:0 
+| /usr/bin/ripmime -v -i "-" -d "$ATTACHMENT_DEST/$UUID"

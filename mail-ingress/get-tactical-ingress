@@ -2,6 +2,7 @@
 
 import sys
 import uuid
+import socket
 
 from datetime import datetime
 from email.parser import Parser
@@ -34,13 +35,24 @@ conn = Connection()
 
 sdb = conn.situationdb
 situations = sdb.situations
+if sys.argv[1]:
+	uuid_int = uuid.UUID(sys.argv[1]).int
+else:
+	uuid_int = uuid.uuid4().int
 
-situation_id_short = base62_encode(uuid.uuid4().int)
+if sys.argv[2]:
+	attachment_dir = sys.argv[2]
+else:
+	attachment_dir = "undefined"
+
+situation_id_short = base62_encode(uuid_int)
 situations.insert({'situation_id': situation_id_short,
 		'situation': msg['SUBJECT'],
 		'owner': msg['FROM'],
 		'participants': msg['CC'],
 		'opened': datetime.utcnow(),
+		'ingress_host': socket.gethostname(),
+		'attachment_directory': attachment_dir,
 		'notification': {'email': "status+%s@tactical.io" % (situation_id_short), 
 				'irc': '%s' % (situation_id_short) },
 		'ingress':msg['TO']})
