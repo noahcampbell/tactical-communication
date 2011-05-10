@@ -10,4 +10,4 @@ UUID=`uuidgen`
 | get-tactical-ingress $UUID $ATTACHMENT_DEST
 
 :0 
-| /usr/bin/ripmime -v -i "-" -d "$ATTACHMENT_DEST/$UUID"
+| /usr/bin/ripmime --name-by-type -v -i "-" -d "$ATTACHMENT_DEST/$UUID"
