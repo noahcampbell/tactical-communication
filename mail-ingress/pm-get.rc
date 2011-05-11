@@ -5,9 +5,17 @@ VERBOSE     = "on"
 PATH	    = /home/noahcampbell/Development/Python/Envs/tactical-communication/bin:$PATH:$HOME/Projects/tactical/tactical-communication/mail-ingress
 ATTACHMENT_DEST = /var/tactical/ingress/attachments
 UUID=`uuidgen`
+TS=`date -u +'%Y%m%d%H%M%S-%N'`
 
-:0 c
-| get-tactical-ingress $UUID $ATTACHMENT_DEST
-
-:0 
-| /usr/bin/ripmime --name-by-type -v -i "-" -d "$ATTACHMENT_DEST/$UUID"
+# get@tactical.io
+:0
+* ^TOget@tactical.io
+{
+	# Process the get@tactical.io email.
+	:0 c
+	| get-tactical-ingress $UUID $ATTACHMENT_DEST
+	
+	# Handle Attachments and Body Text
+	:0 
+	| /usr/bin/ripmime --unique_names --name-by-type -v -i "-" -d "$ATTACHMENT_DEST/${UUID}_${TS}"
+}
