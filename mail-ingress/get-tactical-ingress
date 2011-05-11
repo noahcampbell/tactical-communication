@@ -45,11 +45,22 @@ if sys.argv[2]:
 else:
 	attachment_dir = "undefined"
 
+participants = msg['CC'] if msg['CC'] else ''
+participants = participants.replace(';',',').split(',')
+to = msg['TO'] = msg['TO'] if msg['TO'] else '' 
+to = to.replace(';',',').split(',')
+
+participants += to
+participants = map(lambda x:x.lower().strip(),participants)
+participants.remove('get@tactical.io')
+
+print participants
+
 situation_id_short = base62_encode(uuid_int)
 situations.insert({'situation_id': situation_id_short,
 		'situation': msg['SUBJECT'],
 		'owner': msg['FROM'],
-		'participants': msg['CC'],
+		'participants': participants,
 		'opened': datetime.utcnow(),
 		'ingress_host': socket.gethostname(),
 		'attachment_directory': attachment_dir,
