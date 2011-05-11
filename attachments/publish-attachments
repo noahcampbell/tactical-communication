@@ -1,0 +1,86 @@
+#!/usr/bin/env python
+
+import sys
+import os
+import uuid
+import shutil
+import datetime
+
+from os.path import join
+from optparse import OptionParser
+
+ALPHABET = "ZU1eOAjR3bpzFtGXYaSN82rlLQMV7D6uwiPIochd5sf4H9xkCEBnTKmqyWv0gJ"
+
+def base62_encode(num, alphabet=ALPHABET):
+    """Encode a number in Base X
+
+    `num`: The number to encode
+    `alphabet`: The alphabet to use for encoding
+    """
+    if (num == 0):
+        return alphabet[0]
+    arr = []
+    base = len(alphabet)
+    while num:
+        rem = num % base
+        num = num // base
+        arr.append(alphabet[rem])
+    arr.reverse()
+    return ''.join(arr)
+
+def base62_decode(string, alphabet=ALPHABET):
+    """Decode a Base X encoded string into the number
+
+    Arguments:
+    - `string`: The encoded string
+    - `alphabet`: The alphabet to use for encoding
+    """
+    base = len(alphabet)
+    strlen = len(string)
+    num = 0
+
+    idx = 0
+    for char in string:
+        power = (strlen - (idx + 1))
+        num += alphabet.index(char) * (base ** power)
+        idx += 1
+
+    return num
+
+if __name__ == "__main__":
+	parser = OptionParser()
+	parser.add_option("-a", help="Attachments directory", dest="attachdir")
+	parser.add_option("-t", help="Activity directory", dest="activitydir")
+
+	(options, args) = parser.parse_args()	
+
+	if not options.attachdir:
+		sys.exit(1)
+
+	if not options.activitydir:
+		sys.exit(2)
+	
+	print "Processing attachments in %s and placing in %s" % (options.attachdir, options.activitydir)	
+	
+	for (root, dirs, files) in os.walk(options.attachdir):
+		# ignore the base directory...
+		if root == options.attachdir:
+			continue
+
+		d = os.path.split(root)[1]
+		(dir_uuid, ts_nano) = d.split('_')
+		(ts, nano) = ts_nano.split('-')
+
+		sid = base62_encode(uuid.UUID(dir_uuid).int)
+		new_target = join(options.activitydir, sid)
+
+		os.makedirs(join(new_target,ts_nano))
+		activity_log = open(join(new_target, 'activity'),'a')
+
+		for f in files:
+			shutil.copy(join(root,f), join(new_target,ts_nano,f)) 
+			activity_log.write('%s attachment %s/%s\n' % (ts, ts_nano, f))	
+
+		activity_log.close()
+				
+		
