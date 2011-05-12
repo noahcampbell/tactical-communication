@@ -62,6 +62,7 @@ if __name__ == "__main__":
 	
 	print "Processing attachments in %s and placing in %s" % (options.attachdir, options.activitydir)	
 	
+	stats = dict(dir_created=0, files_copied=0)
 	for (root, dirs, files) in os.walk(options.attachdir):
 		# ignore the base directory...
 		if root == options.attachdir:
@@ -73,14 +74,20 @@ if __name__ == "__main__":
 
 		sid = base62_encode(uuid.UUID(dir_uuid).int)
 		new_target = join(options.activitydir, sid)
-
-		os.makedirs(join(new_target,ts_nano))
+		
+		attachment_path = join(new_target, ts_nano)	
+		if os.path.isdir(attachment_path):
+			continue
+		
+		stats['dir_created'] += 1
+		os.makedirs(attachment_path)
 		activity_log = open(join(new_target, 'activity'),'a')
 
 		for f in files:
+			stats['files_copied'] += 1
 			shutil.copy(join(root,f), join(new_target,ts_nano,f)) 
 			activity_log.write('%s attachment %s/%s\n' % (ts, ts_nano, f))	
 
 		activity_log.close()
 				
-		
+	print "Directories created: %d, Files copied: %d" % (stats['dir_created'], stats['files_copied'])
